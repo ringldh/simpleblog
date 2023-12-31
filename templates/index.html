@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+    <title>Blog Index</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <ul>
+        {% for post in posts %}
+            <li><a href="{{ url_for('post', title=post.title) }}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
