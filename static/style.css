@@ -122,5 +122,13 @@ li a:hover {
 
 .sub-post {
     padding-left: 50px; /* 子目录缩进 */
-    background-color: #f4f4f4; /* 子目录背景颜色 */
+    font-weight: bold;
+    background-color:aliceblue /* 子目录背景颜色 */
+}
+
+.directory-name {
+    font-weight: bold;
+    padding-left: 10px; /* 根据需要调整 */
+    color: #555; /* 根据需要调整 */
+    background-color: beige;
 }

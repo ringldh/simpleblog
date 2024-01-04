@@ -3,17 +3,14 @@ import os
 
 def generate_blog_posts(blog_dir):
     posts = []
+    directories = set()
     for root, dirs, files in os.walk(blog_dir):
+        for d in dirs:
+            dir_path = os.path.relpath(os.path.join(root, d), blog_dir)
+            directories.add(dir_path)  # 收集目录路径
         for filename in files:
             if filename.endswith('.md'):
-                # 获取文件的相对路径
                 relative_path = os.path.relpath(root, blog_dir)
-                # 如果不在根目录，则将目录和文件名合并为完整路径
-                if relative_path != ".":
-                    path = os.path.join(relative_path, filename.replace('.md', ''))
-                else:
-                    path = filename.replace('.md', '')
-
                 filepath = os.path.join(root, filename)
                 with open(filepath, 'r') as file:
                     content = file.read()
@@ -21,11 +18,26 @@ def generate_blog_posts(blog_dir):
                     post = {
                         'title': filename.replace('.md', ''),
                         'content': html_content,
-                        'relative_path': path
+                        'relative_path': relative_path,  # 为帖子设置相对路径
+                        'is_directory': False  # 标记为非目录项
                     }
                     posts.append(post)
-    return posts
 
+    # 为收集到的每个目录添加一个目录项
+    for dir_path in directories:
+        posts.append({
+            'title': os.path.basename(dir_path),  # 目录名
+            'is_directory': True,  # 标记为目录项
+            'relative_path': dir_path  # 为目录设置相对路径
+        })
+
+    # 返回按路径和类型排序的帖子列表
+    def sort_key(post):
+        path_parts = post.get('relative_path', '').split(os.sep)
+        directory_order = 0 if post.get('is_directory', False) else 1
+        return (*path_parts, directory_order, post.get('title', ''))
+    
+    return sorted(posts, key=sort_key)
 
 
 

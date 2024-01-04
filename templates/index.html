@@ -8,10 +8,13 @@
     <div class="container">
         <ul>
             {% for post in posts %}
-                {% set depth = post['relative_path'].split('/') | length %}
-                <li class="post-item {% if depth > 1 %}sub-post{% else %}main-post{% endif %}">
+            {% if not post.is_directory %}
+                <li class="post-item {% if post['relative_path'] != '.' %}sub-post{% else %}main-post{% endif %}">
                     <a href="{{ url_for('post', title=post['title']) }}">{{ post['title'] }}</a>
                 </li>
+            {% else %}
+                <li class="directory-name">{{ post.title }}</li>
+            {% endif %}
             {% endfor %}
         </ul>
         <a href="{{ url_for('edit_post') }}" class="create-post-link">创建新博文</a>

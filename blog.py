@@ -80,7 +80,8 @@ def index():
 @app.route('/post/<string:title>')
 def post(title):
     posts = markdown_utils.generate_blog_posts('blog')
-    post = next((p for p in posts if p['title'] == title), None)
+    # 筛选出非目录的帖子，并匹配标题
+    post = next((p for p in posts if p['title'] == title and not p.get('is_directory', False)), None)
     if post:
         return render_template('post.html', post=post)
     else:
