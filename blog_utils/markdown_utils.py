@@ -3,18 +3,31 @@ import os
 
 def generate_blog_posts(blog_dir):
     posts = []
-    for filename in os.listdir(blog_dir):
-        if filename.endswith('.md'):
-            filepath = os.path.join(blog_dir, filename)
-            with open(filepath, 'r') as file:
-                content = file.read()
-                html_content = markdown2.markdown(content)
-                post = {
-                    'title': filename.replace('.md', ''),  # 或者提取文件中的标题
-                    'content': html_content
-                }
-                posts.append(post)
+    for root, dirs, files in os.walk(blog_dir):
+        for filename in files:
+            if filename.endswith('.md'):
+                # 获取文件的相对路径
+                relative_path = os.path.relpath(root, blog_dir)
+                # 如果不在根目录，则将目录和文件名合并为完整路径
+                if relative_path != ".":
+                    path = os.path.join(relative_path, filename.replace('.md', ''))
+                else:
+                    path = filename.replace('.md', '')
+
+                filepath = os.path.join(root, filename)
+                with open(filepath, 'r') as file:
+                    content = file.read()
+                    html_content = markdown2.markdown(content)
+                    post = {
+                        'title': filename.replace('.md', ''),
+                        'content': html_content,
+                        'relative_path': path
+                    }
+                    posts.append(post)
     return posts
+
+
+
 
 
 
