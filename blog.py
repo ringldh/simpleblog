@@ -1,4 +1,5 @@
 import os
+import re
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
@@ -60,10 +61,32 @@ def edit_post(title=None):
 def upload_post():
     file = request.files['markdown_file']
     if file:
-        filename = secure_filename(file.filename)
-        file.save(os.path.join('blog', filename))
-        return redirect(url_for('index'))
-    return 'No file uploaded', 400
+        # 获取文件名
+        filename = file.filename
+
+        # 检查文件名是否包含中文
+        if re.search("[\u4e00-\u9FFF]", filename):
+            # 包含中文，保持原始文件名
+            filename = filename.encode('utf-8').decode('utf-8')
+        else:
+            # 不包含中文，使用安全的文件名
+            filename = secure_filename(filename)
+
+        # 保存文件的目录
+        upload_folder = 'blog'
+
+        # 确保目录存在
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+
+        # 文件的完整路径
+        filepath = os.path.join(upload_folder, filename)
+
+        # 保存文件
+        file.save(filepath)
+
+        return 'File uploaded successfully'
+    return 'No file uploaded'
 
 def save_post(title, content):
     if not os.path.exists('blog'):
