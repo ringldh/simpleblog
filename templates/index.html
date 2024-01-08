@@ -11,6 +11,8 @@
             {% if not post.is_directory %}
                 <li class="post-item {% if post['relative_path'] != '.' %}sub-post{% else %}main-post{% endif %}">
                     <a href="{{ url_for('post', title=post['title']) }}">{{ post['title'] }}</a>
+                    <br>
+                    <small>最后修改于: {{ post['last_modified'].strftime('%Y-%m-%d %H:%M:%S') }}</small>
                 </li>
             {% else %}
                 <li class="directory-name">{{ post.title }}</li>

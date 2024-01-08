@@ -1,3 +1,4 @@
+from datetime import datetime
 import markdown2
 import os
 
@@ -12,6 +13,8 @@ def generate_blog_posts(blog_dir):
             if filename.endswith('.md'):
                 relative_path = os.path.relpath(root, blog_dir)
                 filepath = os.path.join(root, filename)
+                mtime = os.path.getmtime(filepath)
+                last_modified_date = datetime.fromtimestamp(mtime)
                 with open(filepath, 'r') as file:
                     content = file.read()
                     html_content = markdown2.markdown(content)
@@ -19,7 +22,8 @@ def generate_blog_posts(blog_dir):
                         'title': filename.replace('.md', ''),
                         'content': html_content,
                         'relative_path': relative_path,  # 为帖子设置相对路径
-                        'is_directory': False  # 标记为非目录项
+                        'is_directory': False,  # 标记为非目录项
+                        'last_modified': last_modified_date
                     }
                     posts.append(post)
 

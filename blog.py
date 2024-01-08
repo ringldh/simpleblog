@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from werkzeug.utils import secure_filename
 from blog_utils import markdown_utils
+import configparser
 
 
 
@@ -110,5 +111,12 @@ def post(title):
     else:
         return 'Post not found', 404
 
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+flask_config = config['flask']
+debug = flask_config.getboolean('debug')
+host = flask_config.get('host')
+port = flask_config.getint('port')
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=debug, host=host, port=port)
