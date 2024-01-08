@@ -16,5 +16,22 @@
             {% endif %}
         </div>
     </div>
+    <div>
+        <button id="switch-source-btn">替换国内图片源</button>
+    </div>
+    <script>
+        document.getElementById('switch-source-btn').addEventListener('click', function() {
+            // 获取页面上所有的图片元素
+            var images = document.getElementsByTagName('img');
+            for (var i = 0; i < images.length; i++) {
+                // 替换每个图片的 src 属性
+                images[i].src = images[i].src.replace(
+                    'https://raw.githubusercontent.com/ringldh/tuchuang/master',
+                    'http://git.chenandu.top/Chen/tuchuang/raw/branch/master'
+                );
+            }
+        });
+    </script>
+    
 </body>
 </html>
